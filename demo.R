@@ -1,8 +1,4 @@
 setwd("/home/r6user2/Documents/TQ/ABC")
-library(magrittr)
-library(parallel)
-
-source("utilities.R")
 source("ABC_utils.R")
 
 

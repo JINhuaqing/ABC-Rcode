@@ -1,9 +1,35 @@
-source("utilities.R")
-library(magrittr)
-library(BOIN)
-library(arrApply)
 library(spatstat)
 
+overdose.fn <- function(phi, add.args=list()){
+    cutoff.eli <- add.args$cutoff.eli
+    cutoff.num <- add.args$cutoff.num
+    y <- add.args$y
+    n <- add.args$n
+    alp.prior <- add.args$alp.prior
+    bet.prior <- add.args$bet.prior
+    pp <- post.prob.fn(phi, y, n, alp.prior, bet.prior)
+    if ((pp >= cutoff.eli) & (n>=cutoff.num)){
+        return(TRUE)
+    }else{
+        return(FALSE)
+    }
+}
+
+# posterior probability of pj >= phi given data
+post.prob.fn <- function(phi, y, n, alp.prior=0.1, bet.prior=0.1){
+    alp <- alp.prior + y 
+    bet <- bet.prior + n - y
+    1 - pbeta(phi, alp, bet)
+}
+
+MTD.level <- function(phi, p.true){
+    if (p.true[1]>phi+0.1){
+        MTD <- 99
+        return(MTD)
+    }
+    MTD <- which.min(abs(phi - p.true))
+    return(MTD)
+}
 
 gen.u.rand <- function(k, K=5, phi=0.3, delta=0.1){
     #cps <- c(phi)
